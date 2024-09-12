@@ -12,10 +12,15 @@ the 20-year bonds pay 4.32%, with each compounding annually.
 """
 
 ### all your code below ###
+invest = 33000000000
 
+interest_10year = 0.0396
+interest_20year = 0.0432
 
 # final answer for 10-year
-ten_year_final = None
+ten_year_final = invest * pow(1 + interest_10year,10)
 
 # final answer for 20-year
-twenty_year_final = None
+twenty_year_final = invest * pow(1 + interest_20year,20)
+
+print(ten_year_final,twenty_year_final)
