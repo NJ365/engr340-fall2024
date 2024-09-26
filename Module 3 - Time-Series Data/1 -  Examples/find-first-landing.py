@@ -3,6 +3,7 @@ from os import path
 import scipy.constants as constants
 
 
+
 def calculate_average(data):
     """
     Calculate the sum of data stored in the list.
@@ -82,7 +83,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     # change this file name to load other datasets
-    filename = "FP1.txt"
+    filename = "FP5.txt"
 
     # load force plate data (this path may change based upon where you place this file in your project)
     path_to_data_folder = "../../data/drop-jump/force-plate/"
