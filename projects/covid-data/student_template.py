@@ -264,7 +264,7 @@ def third_question(data):
     Rock_list = []
 
     # For loop to iterate through the list to find the all days for Harrisonburg city
-    # and add to HBurg_list
+    # and add to Rock_list
     for index in range(0, data_range):
 
         # Check to see if second item is Rockingham Virginia
@@ -273,7 +273,7 @@ def third_question(data):
             # Add tuple to the end of list
             Rock_list.append(data[index])
 
-    # Find the length of HBurg_list and reduce the length by three
+    # Find the length of Rockg_list and reduce the length by three
     # Because the later for loop looks at a 7 day window
     # Strarting at middle day, index = 0, with +- 3 on either side
     Rock_list_length = len(Rock_list) - 3
@@ -284,19 +284,33 @@ def third_question(data):
     Rock_worst_day_index = 0    # Worst day's index in Rock_List
     Rock_worst_day = ''         # Date of the worst day
 
-    for index in range (4, Rock_list_length):
+    # Iterate through Rock_list starting at day "4", index 3
+    # Because this is the first variable to capture a whole week
+    # Each loop looks at a one week range
+    for index in range (3, Rock_list_length):
+
+        # Find the total number of new cases to the left and right of index
         for indc in range(-3, 3):
+
             day = Rock_list[index + indc][3]
+
             previous_day = Rock_list[index + indc - 1][3]
 
             Rock_new_cases_day += day - previous_day
 
+        # Check to see if the number of new cases for the week is greater than the previously
+        # found max number of new cases
         if Rock_new_cases_day > Rock_new_cases_max:
+
+            # Update characteristic variables
             Rock_new_cases_max = Rock_new_cases_day
             Rock_worst_day_index = index
             Rock_worst_day = Rock_list[index][0]
+
+        # Reset the total number of new cases for a given week
         Rock_new_cases_day = 0
 
+    # Print out the final results for the worst weeks for both HBurg and Rockingham
     HBurg_start = HBurg_list[HBurg_worst_day_index - 3][0]
 
     HBurg_end = HBurg_list[HBurg_worst_day_index + 3][0]
@@ -307,8 +321,6 @@ def third_question(data):
 
     print("Harrisonburg's worst week was from " + HBurg_start + " to " + HBurg_end + ", with " + str(HBurg_new_cases_max) + " new cases.")
     print("Rockingham's worst week was from " + Rock_start + " to " + Rock_end + ", with " + str(Rock_new_cases_max) + " new cases.")
-
-    return
 
     return
 
