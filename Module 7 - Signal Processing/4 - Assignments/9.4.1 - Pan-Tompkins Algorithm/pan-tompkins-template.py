@@ -1,4 +1,6 @@
 import numpy as np
+from scipy.signal import butter, filtfilt, find_peaks
+import scipy
 from ekg_testbench import EKGTestBench
 
 def detect_heartbeats(filepath):
@@ -16,38 +18,84 @@ def detect_heartbeats(filepath):
 
     # load data in matrix from CSV file; skip first two rows
     ## your code here
+    file = np.loadtxt(path, skiprows=2, delimiter=',')
 
     # save each vector as own variable
     ## your code here
+    time = file[:,0]
 
     # identify one column to process. Call that column signal
+    sig = file[:,1]
 
-    signal = -1 ## your code here
+    frequency_array = []
+
+    for i in range (1,1000):
+        frequency = time[i] - time[i-1]
+        frequency_array.append(frequency)
+
+    # Calculate the fundamental frequency of the data set
+    sampling_frequency = 1 / np.average(frequency_array) # hz
 
     # pass data through LOW PASS FILTER (OPTIONAL)
+    filter_order = 1
+
+    low_frequency = sampling_frequency * 0.3
+    high_frequency = sampling_frequency * 6
+
+    ny_low = low_frequency / 0.5 / sampling_frequency
+    ny_high = high_frequency / 0.5 / sampling_frequency
+
+    critical_frequencies = [ny_low, ny_high]
+
     ## your code here
+    b, a = scipy.signal.butter(N=filter_order,Wn=critical_frequencies, btype='bandpass', fs=sampling_frequency)
 
     # pass data through HIGH PASS FILTER (OPTIONAL) to create BAND PASS result
     ## your code here
 
+    filter_signal = scipy.signal.filtfilt(b, a, sig)
+
     # pass data through differentiator
     ## your code here
+    diff = np.diff(filter_signal)
 
     # pass data through square function
     ## your code here
+    square = np.square(diff)
 
     # pass through moving average window
     ## your code here
+    conv = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    avg = np.convolve(square, conv, mode='valid')
 
+    '''
+    for i in range (0,len(avg) - 11):
+        if avg[i] > 0.3:
+            for j in range (0,10):
+                avg[j + i] = avg[j + i] / 4
+    '''
     # use find_peaks to identify peaks within averaged/filtered data
     # save the peaks result and return as part of testbench result
 
-    ## your code here peaks,_ = find_peaks(....)
+    peaks, _ = find_peaks(avg, height=0.009, distance=sampling_frequency / 3)
 
-    beats = None
+    beats = peaks
+
+
+    plt.plot(sig)
+    plt.plot(filter_signal)
+    plt.title('Filtered ECG Signal')
+
+    plt.show()
+
+    plt.plot(avg)
+    plt.title('Moving Average Signal')
+
+    plt.show()
+
 
     # do not modify this line
-    return signal, beats
+    return filter_signal, beats
 
 
 # when running this file directly, this will execute first
@@ -57,7 +105,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     # database name
-    database_name = 'mitdb_201'
+    database_name = 'nstdb_118e06'
 
     # set to true if you wish to generate a debug file
     file_debug = False
