@@ -108,7 +108,7 @@ if __name__ == "__main__":
     database_name = 'nstdb_118e06'
 
     # set to true if you wish to generate a debug file
-    file_debug = False
+    file_debug = True
 
     # set to true if you wish to print overall stats to the screen
     print_debug = True
